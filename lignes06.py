@@ -7,6 +7,7 @@ import re
 import pandas
 import os
 import signal
+import sys
 
 
 class Db():
@@ -35,6 +36,7 @@ class Scrapper():
         self.db = db
         self.should_continue = True
         signal.signal(signal.SIGINT, self.signal_handler)
+        self.safe_quit = True
 
     def requete(self):
         url = 'http://cg06.tsi.cityway.fr/qrcode' 
@@ -76,10 +78,12 @@ class Scrapper():
        return temps
    
     def insert_in_db(self,temps):
+       self.safe_quit = False
        idscrap = self.db.get_highest_idscrap() + 1
        for temp in temps:
            self.db.insert([idscrap,datetime.now(),temp[0],temp[1]])
        self.db.save()
+       self.safe_quit = True
 
     def scrap(self):
        print('request sent')
@@ -109,6 +113,7 @@ class Scrapper():
             
     def signal_handler(self,sig, frame):
         print('You pressed Ctrl+C! , exiting...')
+        if self.safe_quit: sys.exit(0)
         self.should_continue = False        
 
 if __name__ =='__main__':
