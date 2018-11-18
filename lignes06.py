@@ -120,7 +120,7 @@ if __name__ =='__main__':
 
     db = Db()
     scrapper = Scrapper(490,db)
-    scrapper.launch(15)
+    scrapper.launch(25)
 
 
 
