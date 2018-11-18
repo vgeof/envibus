@@ -12,11 +12,11 @@ import signal
 class Db():
     def __init__(self,filename = 'data200.csv'):
         self.filename = filename
-        self.columns = ['idscrap','time_saved','minutes']
+        self.columns = ['idscrap','time_saved','minutes','theorique']
         try : 
             self.df = pandas.read_csv(self.filename,usecols = self.columns)
         except FileNotFoundError: 
-            print('no file found, crreating a new one')
+            print('no file found, creating a new one')
             self.df = pandas.DataFrame(columns = self.columns)
             self.df.to_csv(filename)
     def save(self):
@@ -65,21 +65,20 @@ class Scrapper():
         
     def extract_from_soup(self,soup):
        temps  = str(soup.find('div',class_ = 'data').find('div')).split('<br/>')
-       temps = list(filter(lambda x:'*' not in x ,temps))
-
-       temps = list(map(lambda x: BeautifulSoup(x,features = 'lxml'),temps))
-       temps = list(map(lambda x:x.find('span'),temps))
-       temps = list(filter(lambda x:x is not None ,temps))
-       temps = list(map(lambda x: x.get_text().lower(),temps))
-       temps = list(map(self.convert_str_to_time,temps))
-       temps = list(filter(lambda x:x is not None ,temps))
+       temps= list(map(lambda x:(x,'*'  in x ),temps))
+       temps = list(map(lambda x: (BeautifulSoup(x[0],features = 'lxml'),x[1]),temps))
+       temps = list(map(lambda x:(x[0].find('span'),x[1]),temps))
+       temps = list(filter(lambda x:x[0] is not None ,temps))
+       temps = list(map(lambda x: (x[0].get_text().lower(),x[1]),temps))
+       temps = list(map(lambda x :(self.convert_str_to_time(x[0]),x[1]),temps))
+       temps = list(filter(lambda x:x[0] is not None ,temps))
 
        return temps
    
     def insert_in_db(self,temps):
        idscrap = self.db.get_highest_idscrap() + 1
        for temp in temps:
-           self.db.insert([idscrap,datetime.now(),temp])
+           self.db.insert([idscrap,datetime.now(),temp[0],temp[1]])
        self.db.save()
 
     def scrap(self):
