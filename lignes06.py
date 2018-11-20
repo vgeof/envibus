@@ -66,13 +66,21 @@ class Scrapper():
             return ret
         
     def extract_from_soup(self,soup):
+       def taff(string):
+           if 'approche' in string : return 0
+           else:
+               soup = BeautifulSoup(string,features = 'lxml')
+               elt = soup.find('span')
+               if elt:
+                   return self.convert_str_to_time(elt.get_text().lower())
        temps  = str(soup.find('div',class_ = 'data').find('div')).split('<br/>')
        temps= list(map(lambda x:(x,'*'  in x ),temps))
-       temps = list(map(lambda x: (BeautifulSoup(x[0],features = 'lxml'),x[1]),temps))
-       temps = list(map(lambda x:(x[0].find('span'),x[1]),temps))
-       temps = list(filter(lambda x:x[0] is not None ,temps))
-       temps = list(map(lambda x: (x[0].get_text().lower(),x[1]),temps))
-       temps = list(map(lambda x :(self.convert_str_to_time(x[0]),x[1]),temps))
+       temps = list(map(lambda x: (taff(x[0]),x[1]) ,temps))
+#       temps = list(map(lambda x: (BeautifulSoup(x[0],features = 'lxml'),x[1]),temps))
+#       temps = list(map(lambda x:(x[0].find('span'),x[1]),temps))
+##       temps = list(filter(lambda x:x[0] is not None ,temps))
+#       temps = list(map(lambda x: (x[0].get_text().lower(),x[1]),temps))
+#       temps = list(map(lambda x :(self.convert_str_to_time(x[0]),x[1]),temps))
        temps = list(filter(lambda x:x[0] is not None ,temps))
 
        return temps

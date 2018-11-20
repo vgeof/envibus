@@ -13,6 +13,8 @@ import numpy as np
 columns = ['idscrap','time_saved','minutes','theorique']
 
 data = pandas.read_csv('data200.csv',usecols = columns,parse_dates=['time_saved'])
+data = data.loc[data['theorique']==False]
+plt.plot_date('time_saved','minutes','+',data = data)
 
 def identifie_bus(data):
     data['bus_id'] = pandas.Series(0,index = data.index)
@@ -41,9 +43,9 @@ def identifie_bus(data):
     
     return data
 
-def plot():
-    for i in list(set(data['bus_id'])):
-        slic = data.loc[data['bus_id']==i]
+def plot(key = 'bus_id'):
+    for i in list(set(data[key])):
+        slic = data.loc[data[key]==i]
         plt.plot_date(slic['time_saved'],slic['minutes'],'+',label=str(i))
 
 
@@ -67,7 +69,13 @@ data['real_minutes'] = data['arrivees'] - data['time_saved']
 data['real_minutes'] = data['real_minutes'].map(lambda x:x.seconds/60)
 
 for name,bus in data.groupby('bus_id'):
-    print(np.polyfit(bus['real_minutes'],bus['minutes'],deg = 1))
+    if name == 1:
+        reg = np.polyfit(bus['real_minutes'],bus['minutes'],deg = 1)
+        print(reg)
+        x = bus['real_minutes']
+        plt.plot(x,bus['minutes'])
+        plt.plot(x,reg[0]*x + reg[1])
+plt.plot(x,x)
 
     
 
