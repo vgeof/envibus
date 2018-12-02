@@ -86,7 +86,7 @@ class Enricher:
         self.data.loc[arrives.index,'real_minutes']=(arrives['arrivees'] - arrives['time_saved']).map(lambda x:x.seconds/60)
     def save(self):
         ide = len(os.listdir('data_enriched'))
-        self.data.to_csv('data' + str(ide))
+        self.data.to_csv('./data_enriched/data' + str(ide) + '.csv')
 if __name__=="__main__":
     en = Enricher("2018-11-22",None)
     en.identifie_bus()

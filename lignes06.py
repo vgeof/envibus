@@ -99,7 +99,7 @@ class Scrapper():
        try:
            soup = self.requete()
        except Exception as e:
-           print(e)
+           raise(e)
        else : 
            print('success')
 
@@ -130,6 +130,3 @@ if __name__ =='__main__':
     db = Db()
     scrapper = Scrapper(490,db)
     scrapper.launch(25)
-
-
-
