@@ -8,6 +8,7 @@ import pandas
 import os
 import signal
 import sys
+from shutil import copyfile
 
 
 class Db():
@@ -21,7 +22,7 @@ class Db():
             self.df = pandas.DataFrame(columns = self.columns)
             self.df.to_csv(filename)
     def save(self):
-        os.system('cp ' + self.filename + ' ' + self.filename + '.bak')
+        copyfile(self.filename, self.filename + '.bak')
         self.df.to_csv(self.filename)
     def insert(self,data):
         assert(len(data) == len(self.columns))
