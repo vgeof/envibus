@@ -87,14 +87,43 @@ class Enricher:
     def save(self):
         ide = len(os.listdir('data_enriched'))
         self.data.to_csv('./data_enriched/data' + str(ide) + '.csv')
+        
+    def compute_dist(self):
+        self.data['distance'] = pandas.Series(0,index = self.data.index)
+        self.data['vitesse'] = pandas.Series(0,index = self.data.index)
+
+        data2 = self.data.loc[-self.data['arrivees'].isnull()]
+        for name,bus in data2.groupby('bus_id'):
+            x0 = 1
+            xn = x0
+            self.data.loc[bus.index[0],'distance'] = xn
+
+            for i in range(len(bus.index)-1):
+                ind = bus.index[i]
+                dt = (bus.loc[bus.index[i+1]]['time_saved']-bus.loc[ind]['time_saved'] ).seconds
+                trn = bus.loc[ind]['minutes']*60
+                #trn = (bus.iloc[0]['minutes']*60-1*ind*dt)
+                if trn!=0 :xn1 = xn*(1-dt/trn)
+                else :xn1 = 0
+                self.data.loc[bus.index[i],'vitesse'] =(xn1-xn)/dt
+                xn = xn1
+                self.data.loc[bus.index[i+1],'distance'] = xn
+            
+
 if __name__=="__main__":
     en = Enricher("2018-11-22",None)
     en.identifie_bus()
-    c = input('continue to saving?(y/n) ')
+#    c = input('continue to saving?(y/n) ')
 #    plt.plot_date('time_saved','minutes','+',data = en.data)
-    if c=='y':
-        print('adding arrivees')
-        en.add_arrivees()
-        print('saving')
-        en.save()
-        print('done')
+#    if c=='y':
+#        print('adding arrivees')
+#        en.add_arrivees()
+#        print('saving')
+#        en.save()
+#        print('done')
+    en.add_arrivees()
+    en.compute_dist()
+    plt.figure()
+    for name,bus in en.data.groupby('bus_id'):
+        if not pandas.isna(bus.iloc[0]['arrivees']):
+            plt.plot(bus['real_minutes'],bus['vitesse'])
