@@ -9,6 +9,7 @@ import os
 import signal
 import sys
 from shutil import copyfile
+import sys
 
 
 class Db():
@@ -74,7 +75,10 @@ class Scrapper():
                elt = soup.find('span')
                if elt:
                    return self.convert_str_to_time(elt.get_text().lower())
-       temps  = str(soup.find('div',class_ = 'data').find('div')).split('<br/>')
+       temps  = list(filter(lambda x:'200' in str(x),soup.find_all('div',class_ = 'data')))
+       if len(temps)!=1:print('WARNING : Several lines are found, only first is parsed')
+       temps = temps[0]
+       temps = str(temps.find('div')).split('<br/>')
        temps= list(map(lambda x:(x,'*'  in x ),temps))
        temps = list(map(lambda x: (taff(x[0]),x[1]) ,temps))
 #       temps = list(map(lambda x: (BeautifulSoup(x[0],features = 'lxml'),x[1]),temps))
@@ -95,7 +99,7 @@ class Scrapper():
        self.safe_quit = True
 
     def scrap(self):
-       print('request sent')
+       print('request sent for stop : '+ str(self.idarret))
        try:
            soup = self.requete()
        except Exception as e:
@@ -126,7 +130,9 @@ class Scrapper():
         self.should_continue = False        
 
 if __name__ =='__main__':
-
-    db = Db()
-    scrapper = Scrapper(490,db)
+    arret = sys.argv[1]
+    print(arret)
+#    sys.stdout = open('log' + str(arret), 'w')
+    db = Db(filename = 'data200_' + str(arret) + '.csv')
+    scrapper = Scrapper(arret,db)
     scrapper.launch(25)

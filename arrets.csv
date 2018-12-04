@@ -1,0 +1,801 @@
+,id,lignes,nom
+0,0,[], - 
+1,1,[],ABATTOIRS
+2,2,['116'],ABATTOIRS
+3,3,[], - 
+4,4,"['200', '230', '500', '400', '217']",AEROPORT / PROMENADE
+5,5,[],AÃ©roport T.1
+6,6,[], - 
+7,7,[],AEROPORT / PROMENADE
+8,8,[], - 
+9,9,['200'],ALBERT 1er VERDUN
+10,10,[],ANCIEN OCTROI
+11,11,[],ANCIEN OCTROI
+12,12,[], - 
+13,13,[], - 
+14,14,['100'],Batterie - Nice
+15,15,['100'],Batterie - Nice
+16,16,[],BON VOYAGE
+17,17,['116'],BON VOYAGE
+18,18,[], - 
+19,19,[],CITE PLM
+20,20,['116'],CITE PLM
+21,21,[],CONGRES / PROMENADE
+22,22,['112'],De Joly
+23,23,[], - 
+24,24,"['200', '400']",FABRON MUSEE D'ART NAIF
+25,25,"['230', '500']",FABRON MUSEE D'ART NAIF
+26,26,[], - 
+27,27,"['230', '200', '500', '400', '217']",Carras/Promenade
+28,28,[],CARRAS / PROMENADE
+29,29,[], - 
+30,30,[], - 
+31,31,['112'],Fort Thaon
+32,32,"['230', '200', '500', '400', '217']",GAMBETTA / PROMENADE
+33,33,[],GAMBETTA / PROMENADE
+34,34,[], - 
+35,35,[], - 
+36,36,[], - 
+37,37,[], - 
+38,38,[], - 
+39,39,[], - 
+40,40,[], - 
+41,41,"['200', '500', '400']",GROSSO CUM / PROMENADE
+42,42,[],GROSSO CUM / PROMENADE
+43,43,"['217', '230']",GUSTAVE V
+44,44,['100'],Gustavin
+45,45,[],Gustavin
+46,46,[], - 
+47,47,[], - 
+48,48,['100'],HÃ´pital Anglais
+49,49,['100'],HÃ´pital Anglais
+50,50,[], - 
+51,51,[], - 
+52,52,['116'],PONT V. AURIOL
+53,53,[],LA BRIGUE
+54,54,[],LA CHAUMIERE
+55,55,['116'],LA CHAUMIERE
+56,56,"['230', '200', '500', '400']",LA VALLIERE / PROMENADE
+57,57,[], - 
+58,58,[],LAVOIR
+59,59,['116'],LAVOIR
+60,60,[], - 
+61,61,[],Le Port - Nice
+62,62,['100'],Le Port - Nice
+63,63,[],PrÃ©sident
+64,64,['100'],PrÃ©sident
+65,65,[], - 
+66,66,[], - 
+67,67,"['200', '500', '400']",LENVAL/ PROMENADE
+68,68,[],LENVAL/ PROMENADE
+69,69,['100'],Les CrÃªtes
+70,70,[],Les CrÃªtes
+71,71,[], - 
+72,72,[], - 
+73,73,[],LES ECOLES
+74,74,['116'],LES ECOLES
+75,75,['100'],Les HespÃ©rides
+76,76,['100'],Les HespÃ©rides
+77,77,[], - 
+78,78,[], - 
+79,79,['112'],L'Escale
+80,80,[], - 
+81,81,"['230', '217']",LYCEE MASSENA
+82,82,['100'],Maeterlinck
+83,83,['100'],Maeterlinck
+84,84,"['230', '200', '500', '400', '217']",MAGNAN / PROMENADE
+85,85,[],MAGNAN / PROMENADE
+86,86,[], - 
+87,87,['112'],Max Barel
+88,88,[], - 
+89,89,['112'],Moyenne Corniche
+90,90,[], - 
+91,91,[],NICE PARKING
+92,92,[],PARC A FOURRAGE
+93,93,['116'],PARC A FOURRAGE
+94,94,['100'],Parc Louisa
+95,95,[],Parc Louisa
+96,96,[], - 
+97,97,[], - 
+98,98,[], - 
+99,99,[], - 
+100,100,['112'],PrÃ© Fossati
+101,101,[], - 
+102,102,[], - 
+103,103,[], - 
+104,104,[], - 
+105,105,['100'],Saint Aignan
+106,106,[],Saint Aignan
+107,107,[], - 
+108,108,['116'],Saint Jean d'Angely
+109,109,['217'],Station Bermond
+110,110,[], - 
+111,111,[],SAINTE HELENE / PROMENADE
+112,112,"['200', '500', '400', '217']",SAINTE HELENE / PROMENADE
+113,113,[],TENDE
+114,114,['116'],TENDE GENDARMERIE
+115,115,['112'],Terra Amata
+116,116,[], - 
+117,117,['112'],Urbain Bosio
+118,118,[], - 
+119,119,['112'],XVe Corps
+120,120,['230'],CATHEDRALE VIEILLE VILLE
+121,121,[], - 
+122,122,['116'],Tende
+123,123,[], - 
+124,124,[],Risso Palais
+125,125,[], - 
+126,126,[],NICE - VAUBAN
+127,127,[], - 
+128,128,"['200', '500', '400', '217']",CONGRES / PROMENADE
+129,129,[], - 
+130,130,[], - 
+131,131,[], - 
+132,132,[], - 
+133,133,[], - 
+134,134,[], - 
+135,135,[], - 
+136,136,[], - 
+137,137,[], - 
+138,138,[], - 
+139,139,[], - 
+140,140,[], - 
+141,141,[], - 
+142,142,[], - 
+143,143,[], - 
+144,144,[], - 
+145,145,[], - 
+146,146,[], - 
+147,147,['400'],Vence Rocade
+148,148,['400'],VENCE ROCADE
+149,149,[],Le Marronnier
+150,150,[],Le Marronnier
+151,151,[],Le Peyron
+152,152,[],Le Pont des Colles
+153,153,[],Les Fonts
+154,154,[], - 
+155,155,[], - 
+156,156,[],Les VacquiÃ¨res
+157,157,[],Les VacquiÃ¨res
+158,158,[],MarÃ©chal Foch
+159,159,[], - 
+160,160,[], - 
+161,161,[],Mont Gros
+162,162,[],Plan du Bois
+163,163,[], - 
+164,164,[],Saint-EstÃ¨ve
+165,165,[],Thomas Garbies
+166,166,[],Thomas Garbies
+167,167,[],Baou des Noirs
+168,168,[],Baou des Noirs
+169,169,[],Chapelle Matisse
+170,170,[],Chapelle Matisse
+171,171,[],Humbert Ricolfi
+172,172,[],Humbert Ricolfi
+173,173,[],L'Abay
+174,174,[],L'Abay
+175,175,[],Lafayette
+176,176,[],L'Anguille
+177,177,[],L'Anguille
+178,178,[],Le Cougnet
+179,179,[],Le Cougnet
+180,180,[],Le FonzÃ©ri
+181,181,[],Le Malvan
+182,182,[],Le Malvan
+183,183,[],Les Adrets
+184,184,[],Les Adrets
+185,185,[],Les Cambreniers
+186,186,[],Les Cambreniers
+187,187,[],Les Cents ChÃªnes
+188,188,[],Les Cents ChÃªnes
+189,189,[],Les Fonts / TAM
+190,190,[],Les Panoramas
+191,191,[],Les PrÃ©s
+192,192,[],Les PrÃ©s
+193,193,[],Les Quatre Vents
+194,194,[],Les Quatre Vents
+195,195,[],Mistral
+196,196,[],Mistral
+197,197,[],Notre Dame des Fleurs
+198,198,[],Notre Dame des Fleurs
+199,199,[],Pont Royal
+200,200,[],Saint-Donat / TAM
+201,201,[],Saint-Donat / TAM
+202,202,[],Saint-Martin
+203,203,['400'],HALTE ROUTIERE DE L'ARA
+204,204,[],Les Panoramas
+205,205,[],Saint-EstÃ¨ve
+206,206,['400'],ROUTE DE SAINT PAUL
+207,207,"['200', '400', '500']",11 NOVEMBRE
+208,208,"['200', '400', '500']",SQUARE DU 8 MAI
+209,209,"['200', '400']",SQUARE DU 8 MAI
+210,210,['217'],Centre de Loisirs
+211,211,['217'],Centre des ImpÃ´ts
+212,212,[], - 
+213,213,[], - 
+214,214,[], - 
+215,215,['217'],Hippodrome
+216,216,[],Hippodrome
+217,217,"['200', '400']",LA BEGUDE
+218,218,"['200', '400', '500']",LA BEGUDE
+219,219,['217'],La Foux
+220,220,['217'],La PinÃ¨de
+221,221,[], - 
+222,222,[], - 
+223,223,['200'],LOGIS DU LOUP
+224,224,['200'],LOGIS DU LOUP
+225,225,['217'],TiercÃ©
+226,226,"['200', '400']",L'EGLISE
+227,227,"['400', '500', '200']",LES OLIVIERS
+228,228,"['200', '400']",LES OLIVIERS
+229,229,"['400', '500', '200']",LES TRITONS SNCF
+230,230,"['500', '200', '400']",LES VESPINS
+231,231,"['200', '400']",LES VESPINS
+232,232,"['200', '400']",LES VIOLETTES
+233,233,"['400', '500', '200']",LES VIOLETTES
+234,234,"['200', '400']",GEORGES POMPIDOU
+235,235,"['200', '400', '500']",GEORGES POMPIDOU
+236,236,"['200', '400', '500']",SQUARE BOURDET
+237,237,"['200', '400']",SQUARE BOURDET
+238,238,['200'],SAINT-VERAN
+239,239,['200'],SAINT-VERAN
+240,240,"['200', '400']",VAL FLEURI
+241,241,"['500', '200', '400']",VAL FLEURI
+242,242,['217'],Centre de Loisirs
+243,243,"['200', '400']",LES TRITONS SNCF
+244,244,['217'],Saint Pierre
+245,245,[], - 
+246,246,[], - 
+247,247,[], - 
+248,248,[], - 
+249,249,[], - 
+250,250,[], - 
+251,251,['217'],CENTRE COMMERCIAL
+252,252,[], - 
+253,253,[], - 
+254,254,[], - 
+255,255,[], - 
+256,256,[], - 
+257,257,[], - 
+258,258,['217'],France Outre Mer
+259,259,"['200', '400']",LA BELLE ETOILE
+260,260,"['200', '500', '400']",LA BELLE ETOILE
+261,261,[], - 
+262,262,[], - 
+263,263,[], - 
+264,264,[], - 
+265,265,[], - 
+266,266,[], - 
+267,267,"['500', '200', '400']",LE GROS CHENE
+268,268,[], - 
+269,269,['217'],Maona Plage
+270,270,[], - 
+271,271,[], - 
+272,272,[], - 
+273,273,[], - 
+274,274,[], - 
+275,275,[], - 
+276,276,[], - 
+277,277,[], - 
+278,278,[], - 
+279,279,[], - 
+280,280,[], - 
+281,281,[], - 
+282,282,"['200', '400']",RN 7 - LES MOUETTES
+283,283,[], - 
+284,284,"['200', '400']",RN7 VAUBAN
+285,285,['217'],RN98
+286,286,[], - 
+287,287,[], - 
+288,288,[], - 
+289,289,[], - 
+290,290,[], - 
+291,291,[], - 
+292,292,[], - 
+293,293,[], - 
+294,294,['217'],Surcouf
+295,295,['217'],Trotteur Plage
+296,296,[], - 
+297,297,[], - 
+298,298,['217'],Verdun
+299,299,[], - 
+300,300,"['200', '400']",GARE RN7-SNCF
+301,301,[],Baccia Donna
+302,302,['116'],Baccia Donna
+303,303,[],Camp Bolin
+304,304,['116'],Camp Bolin
+305,305,[],Castel Saint Pierre
+306,306,['116'],Castel Saint Pierre
+307,307,[],LA NUIT
+308,308,['116'],LA NUIT
+309,309,['116'],Lavelan
+310,310,[],Lavelan
+311,311,[],LâOLI
+312,312,['116'],LâOLI
+313,313,[],NÃ©gron
+314,314,['116'],NÃ©gron
+315,315,[],Pont de Figour
+316,316,['116'],Pont de Figour
+317,317,['116'],PONT DE L'ARIANE
+318,318,[],PONT DE L'ARIANE
+319,319,[],RIBAT ROUSSA
+320,320,['116'],RIBAT ROUSSA
+321,321,[],Roland
+322,322,['116'],Roland
+323,323,['116'],ROUTE DE LAGHET
+324,324,[],SAINTE-ANNE
+325,325,['116'],SAINTE-ANNE
+326,326,[],Sanctuaire Laghet
+327,327,[],Place de Rebat
+328,328,['116'],Place de Rebat
+329,329,[],ROUTE DE LAGHET
+330,330,['100'],Ange Gardien
+331,331,['100'],Ange Gardien
+332,332,['100'],Baie des Fourmis
+333,333,[], - 
+334,334,[],Barnessa
+335,335,['112'],Barnessa
+336,336,"['110 Express', '112']",Bautugan
+337,337,['100'],Beaverbrook
+338,338,['100'],Cap Roux
+339,339,['100'],Cap Roux
+340,340,['112'],Centre MÃ©ditÃ©rranÃ©en
+341,341,['112'],ChÃ¢teau Balzan
+342,342,['112'],Col de Villefranche
+343,343,[],Col de Villefranche
+344,344,['100'],David
+345,345,['100'],David
+346,346,['100'],Deux Tunnels
+347,347,['100'],Edmond's Cap d'Ail
+348,348,[],Escaliers de Verre
+349,349,['112'],Eze Village
+350,350,[],Eze Village
+351,351,['100'],Gare SNCF d'Ãze
+352,352,['100'],Gare SNCF d'Ãze
+353,353,['100'],Gianton
+354,354,['100'],Gianton
+355,355,['100'],Guillaume Appollinaire
+356,356,['100'],HÃ´tel de Ville - Cap d'Ail
+357,357,['100'],HÃ´tel de Ville - Cap d'Ail
+358,358,['100'],Joffre
+359,359,[],KÃ©rylos
+360,360,[],La VallÃ©ria
+361,361,['100'],Barmassa
+362,362,['100'],Barmassa
+363,363,['112'],La Calade
+364,364,[],La Calade
+365,365,['112'],La Corne d'Or
+366,366,[],La Corne d'Or
+367,367,['112'],La LÃ©opolda
+368,368,[],La LÃ©opolda
+369,369,[],La PinÃ¨de
+370,370,['112'],La PinÃ¨de
+371,371,['100'],La Source
+372,372,['112'],La VallÃ©ria
+373,373,['112'],Le Castellet
+374,374,[],Le Castellet
+375,375,['100'],Le Loup Blanc
+376,376,['100'],L'Eglise - Cap d'Ail
+377,377,[],L'Eglise - Cap d'Ail
+378,378,[], - 
+379,379,['100'],LÃ©opold II
+380,380,['100'],LÃ©opold II
+381,381,[],Les Caroubiers
+382,382,['112'],Les Caroubiers
+383,383,['100'],Deux Tunnels
+384,384,[],Les Flots Bleus
+385,385,['112'],Les Flots Bleus
+386,386,['100'],LibertÃ©
+387,387,['100'],Le Loup Blanc
+388,388,[],Madone Noire
+389,389,[], - 
+390,390,[], - 
+391,391,[],Oasis
+392,392,['100'],Octroi
+393,393,['100'],Octroi
+394,394,['100'],Petite Afrique
+395,395,['100'],Pont St Jean
+396,396,['112'],Saint-Laurent-d'Eze  RN7
+397,397,['112'],Saint Michel
+398,398,[],Saint Michel
+399,399,['100'],Saint EstÃ¨ve
+400,400,['100'],Saint EstÃ¨ve
+401,401,['100'],SchifanoÃ¯a
+402,402,['100'],SchifanoÃ¯a
+403,403,['100'],Parking St Laurent d'Eze
+404,404,['100'],Parking St Laurent d'Eze
+405,405,[], - 
+406,406,['100'],Gare SNCF - Beaulieu s/ Mer
+407,407,['100'],Petite Afrique
+408,408,[], - 
+409,409,['100'],Cap Estel
+410,410,['100'],Cap Estel
+411,411,[],Pont St Jean
+412,412,['100'],La Plage Beaulieu
+413,413,[],La Plage Beaulieu
+414,414,[],Le Port - Beaulieu s/ Mer
+415,415,['100'],Le Port - Beaulieu s/ Mer
+416,416,['100'],L'Eglise - Beaulieu s/ Mer
+417,417,[], - 
+418,418,[], - 
+419,419,['217'],La Serre
+420,420,['100'],CimetiÃ¨re - Monaco
+421,421,"['100', '110 Express']",Place d'Armes - Monaco
+422,422,['100'],Princesse Antoinette SNCF
+423,423,"['100', '110 Express']",Monte Carlo Casino
+424,424,['100'],Place des Moulins
+425,425,"['100', '110 Express']",Saint Roman
+426,426,[], - 
+427,427,['100'],La TranchÃ©e
+428,428,['100'],La Boucherie
+429,429,"['100', '110 Express']",Les 4 Chemins
+430,430,[],Ramingao
+431,431,['100'],Datcha
+432,432,['100'],2Ã¨me Escalier
+433,433,['100'],1er Escalier
+434,434,"['100', '110 Express']",Massolin
+435,435,[], - 
+436,436,[], - 
+437,437,['110 Express'],Mairie - Roquebrune
+438,438,[], - 
+439,439,['110 Express'],Victoria
+440,440,['110 Express'],Les Plages - Roquebrune Cap Martin
+441,441,[], - 
+442,442,[], - 
+443,443,['100'],MarchÃ© (CarnolÃ¨s)
+444,444,['100'],Pont de l'Union
+445,445,['100'],Madone Parc
+446,446,"['100', '110 Express']",Place d'Armes - Menton
+447,447,"['100', '110 Express']",Casino
+448,448,[],BiovÃ¨s SNCF
+449,449,['100'],Menton Gare RoutiÃ¨re
+450,450,['100'],Torraca
+451,451,['100'],Riva Bella
+452,452,['100'],2Ã¨me Hameau
+453,453,['100'],1er Hameau
+454,454,['100'],Bien SituÃ©e
+455,455,['100'],Casernes SNCF
+456,456,[], - 
+457,457,[], - 
+458,458,['100'],Madone Parc
+459,459,['100'],Pont de l'Union
+460,460,['100'],St Joseph(CarnolÃ¨s)
+461,461,[], - 
+462,462,[], - 
+463,463,['110 Express'],Les Plages - Roquebrune Cap Martin
+464,464,['110 Express'],Victoria
+465,465,[], - 
+466,466,['110 Express'],Mairie - Roquebrune
+467,467,[], - 
+468,468,['100'],Massolin
+469,469,['100'],1er Escalier
+470,470,['100'],2Ã¨me Escalier
+471,471,['100'],Ramingao
+472,472,"['100', '110 Express']",Les 4 Chemins
+473,473,['100'],La Boucherie
+474,474,['100'],La TranchÃ©e
+475,475,[], - 
+476,476,"['100', '110 Express']",Saint Roman
+477,477,[], - 
+478,478,['100'],Place des Moulins
+479,479,"['110 Express', '100']",Monte Carlo Casino
+480,480,"['100', '110 Express']",Sainte DÃ©vote SNCF
+481,481,"['100', '110 Express']",Place d'Armes - Monaco
+482,482,[],CimetiÃ¨re - Monaco
+483,483,['100'],LibertÃ©
+484,484,[], - 
+485,485,['100'],Casernes SNCF
+486,486,['100'],Bien SituÃ©e
+487,487,['100'],1er Hameau
+488,488,['100'],2Ã¨me Hameau
+489,489,['100'],Torraca
+490,490,['200'],Deux Rives
+491,491,['200'],Loubet Marina
+492,492,"['200', '250 Express']",Les Touristes SNCF
+493,493,['200'],Parc Vaugrenier
+494,494,['200'],Les Groules
+495,495,"['200', '250 Express']",Biot Gare SNCF
+496,496,['200'],Tananarive
+497,497,"['200', '250 Express']",La Fontonne
+498,498,['200'],Petit Four
+499,499,[], - 
+500,500,[], - 
+501,501,[], - 
+502,502,['200'],Pont Colonial
+503,503,"['200', '250 Express']",La RÃ©gence
+504,504,"['200', '250 Express']",Pont du Lys
+505,505,['200'],Le Trianon
+506,506,['200'],Eglise J.d'Arc
+507,507,[], - 
+508,508,"['200', '250 Express']",Les Eucalyptus
+509,509,['200'],La GlaciÃ¨re
+510,510,['200'],Les Courcettes
+511,511,['200'],La Gabelle
+512,512,['200'],Square Nabonnand
+513,513,['200'],Villa Lucienne
+514,514,['200'],Pont de l'Aube
+515,515,['200'],Batterie - Cannes
+516,516,[],Mire Juan
+517,517,['200'],La Source
+518,518,[],Alexandra Palace
+519,519,[], - 
+520,520,[], - 
+521,521,[], - 
+522,522,[],MarÃ©chal Joffre
+523,523,[], - 
+524,524,[],Cannes Gare RoutiÃ¨re
+525,525,[], - 
+526,526,[], - 
+527,527,['200'],Pont des Gabres
+528,528,['200'],Capron
+529,529,['200'],Notre Dame des Pins
+530,530,['200'],Gazagnaire
+531,531,['200'],Mire Juan
+532,532,['200'],Batterie - Cannes
+533,533,['200'],Pont de l'Aube
+534,534,['200'],Villa Lucienne
+535,535,['200'],Square Nabonnand
+536,536,['200'],La Gabelle
+537,537,['200'],Les Courcettes
+538,538,['200'],La GlaciÃ¨re
+539,539,"['200', '250 Express']",Les Eucalyptus
+540,540,[], - 
+541,541,['200'],Eglise J.d'Arc
+542,542,['200'],Le Trianon
+543,543,"['200', '250 Express']",Pont du Lys
+544,544,"['200', '250 Express']",La RÃ©gence
+545,545,['200'],Pont Colonial
+546,546,['200'],Dugommier
+547,547,"['400', '200', '217']",PASSERELLE
+548,548,['200'],Chemin Du Prugnon
+549,549,['200'],Petit Four
+550,550,"['250 Express', '200']",La Fontonne
+551,551,['200'],Tananarive
+552,552,"['200', '250 Express']",Biot Gare SNCF
+553,553,['200'],Les Groules
+554,554,['200'],Parc Vaugrenier
+555,555,"['200', '217', '250 Express']",Loubet Marina
+556,556,"['200', '217']",Deux Rives
+557,557,['116'],Le Rondeau
+558,558,['116'],Chemin de l'Esperaye
+559,559,['116'],Sainte Catherine
+560,560,[],Mairie La Turbie
+561,561,['116'],Saint Martin
+562,562,[],Le TÃ©lÃ©phÃ©rique
+563,563,['116'],Saint Pancrace
+564,564,[],Peille Village
+565,565,['116'],Sanctuaire Laghet
+566,566,[],Saint Pancrace
+567,567,[],Le TÃ©lÃ©phÃ©rique
+568,568,[],Saint Martin
+569,569,[],Mairie - La Turbie
+570,570,[],Sainte Catherine
+571,571,[],Chemin de Braousch
+572,572,[],Le Rondeau
+573,573,['112'],CrÃ©mailliÃ¨re
+574,574,[], - 
+575,575,[], - 
+576,576,['110 Express'],Bautugan
+577,577,[], - 
+578,578,['112'],Dixie
+579,579,[], - 
+580,580,[], - 
+581,581,[], - 
+582,582,[],Dixie
+583,583,[],Bautugan
+584,584,[],Menton Bastion
+585,585,[], - 
+586,586,['250 Express'],AÃ©roport T.1
+587,587,['250 Express'],AÃ©roport T.2
+588,588,['112'],Salines hÃ´pital
+589,589,[], - 
+590,590,[],La Roseraie
+591,591,[], - 
+592,592,[],Monte Carlo Beach
+593,593,['110 Express'],Le Solenzara
+594,594,['110 Express'],Viking
+595,595,['110 Express'],Le Solenzara
+596,596,[],Monte Carlo Beach
+597,597,[], - 
+598,598,['110 Express'],Les SpÃ©lugues
+599,599,['110 Express'],Viking
+600,600,[], - 
+601,601,[], - 
+602,602,['112'],Les Serriers
+603,603,[], - 
+604,604,['112'],Pont Ste DÃ©vote SNCF
+605,605,['112'],Zone d'ActivitÃ©s
+606,606,[],Les Serriers
+607,607,['112'],Salines hÃ´pital
+608,608,[],Mairie La Turbie
+609,609,[], - 
+610,610,[], - 
+611,611,[], - 
+612,612,[], - 
+613,613,[], - 
+614,614,[], - 
+615,615,[], - 
+616,616,[], - 
+617,617,[], - 
+618,618,[], - 
+619,619,[], - 
+620,620,[],Jardin Exotique
+621,621,[], - 
+622,622,[], - 
+623,623,[], - 
+624,624,[], - 
+625,625,[], - 
+626,626,[], - 
+627,627,[], - 
+628,628,[], - 
+629,629,[], - 
+630,630,[],BERTEOTTI
+631,631,"['400', '500']",LE PUITS
+632,632,"['400', '500']",LA ROSERAIE
+633,633,"['400', '500']",LE TUNNEL
+634,634,['400'],LA GRANGE RIMADE
+635,635,['400'],HAMEAUX DU SOLEIL
+636,636,['400'],LES ESPERES
+637,637,['400'],LES CAILLADES
+638,638,['400'],PAS DE SENES
+639,639,['400'],LES CAMPONS
+640,640,['400'],MONFORT
+641,641,['400'],LES ARNOUX
+642,642,['400'],VILLAGE
+643,643,['400'],CIMETIERE
+644,644,['400'],LA SOUQUEE
+645,645,['400'],LES CÃTES
+646,646,['400'],LES FUMERATES
+647,647,['400'],FONDATION MAEGHT
+648,648,['400'],VILLAGE
+649,649,[],Le Defoussant
+650,650,[],Saint Etienne C.Commercial
+651,651,['400'],SAINT PAUL
+652,652,['400'],FONDATION MAEGHT
+653,653,['400'],LES FUMERATES
+654,654,['400'],LES CÃTES
+655,655,['400'],LA SOUQUEE
+656,656,['400'],CIMETIERE
+657,657,['400'],VILLAGE
+658,658,['400'],LES ARNOUX
+659,659,['400'],MONFORT
+660,660,['400'],LES CAMPONS
+661,661,['400'],PAS DE SENES
+662,662,['400'],LES CAILLADES
+663,663,['400'],LES ESPERES
+664,664,['400'],HAMEAUX DU SOLEIL
+665,665,['400'],LA GRANGE RIMADE
+666,666,['400'],LE TUNNEL
+667,667,['400'],LA ROSERAIE
+668,668,['400'],LE PUITS
+669,669,[],BERTEOTTI
+670,670,[],Le Defoussant
+671,671,[],Saint Etienne C.Commercial
+672,672,"['630', '600']",PLACE VAUBAN
+673,673,[],HOTEL DE VILLE
+674,674,[],RUE DES SERBES
+675,675,['210 Express'],Place Benidorm
+676,676,['217'],La PinÃ¨de
+677,677,['217'],Hippodrome
+678,678,[], - 
+679,679,[], - 
+680,680,[], - 
+681,681,[], - 
+682,682,[], - 
+683,683,"['200', '250 Express']",Baumettes
+684,684,[], - 
+685,685,['217'],Villeuneuve Loubet Les Maurettes
+686,686,"['217', '200']",Baumettes
+687,687,['217'],Mairie Annexe - Villeneuve Loubet
+688,688,['217'],France Outre Mer
+689,689,['217'],Pompiers
+690,690,['217'],Saint Pierre
+691,691,"['600', '210 Express', '630']",PAUL DOUMER
+692,692,[], - 
+693,693,[], - 
+694,694,[], - 
+695,695,[], - 
+696,696,"['630', '600']",PLACE VAUBAN
+697,697,[], - 
+698,698,[], - 
+699,699,[], - 
+700,700,[], - 
+701,701,['200'],Les PhalÃ¨nes
+702,702,[], - 
+703,703,[], - 
+704,704,[], - 
+705,705,['200'],Les Pervenches
+706,706,[], - 
+707,707,[], - 
+708,708,[], - 
+709,709,[], - 
+710,710,[], - 
+711,711,[], - 
+712,712,[], - 
+713,713,[], - 
+714,714,[], - 
+715,715,[], - 
+716,716,[], - 
+717,717,[], - 
+718,718,[], - 
+719,719,[], - 
+720,720,[], - 
+721,721,[], - 
+722,722,[], - 
+723,723,[], - 
+724,724,[], - 
+725,725,[], - 
+726,726,[], - 
+727,727,[], - 
+728,728,[], - 
+729,729,[], - 
+730,730,[], - 
+731,731,[], - 
+732,732,[], - 
+733,733,[], - 
+734,734,[], - 
+735,735,[], - 
+736,736,[], - 
+737,737,[], - 
+738,738,[], - 
+739,739,[], - 
+740,740,[], - 
+741,741,[], - 
+742,742,[], - 
+743,743,[], - 
+744,744,[], - 
+745,745,[], - 
+746,746,[], - 
+747,747,[], - 
+748,748,[], - 
+749,749,[], - 
+750,750,[], - 
+751,751,[], - 
+752,752,[], - 
+753,753,[], - 
+754,754,[], - 
+755,755,[], - 
+756,756,[], - 
+757,757,[], - 
+758,758,[], - 
+759,759,[], - 
+760,760,[], - 
+761,761,[], - 
+762,762,[], - 
+763,763,[], - 
+764,764,[], - 
+765,765,[], - 
+766,766,[], - 
+767,767,[], - 
+768,768,[], - 
+769,769,['110 Express'],Larvotto
+770,770,[],Square Escalier
+771,771,[],Square Escalier
+772,772,[],Transporteur
+773,773,[],Mounier
+774,774,[],Valettes
+775,775,[],Les Courquettes
+776,776,[],Saint Antoine
+777,777,[],La Menuiserie
+778,778,[],Saint Arnoux
+779,779,[],Camassade
+780,780,[],Le Garage
+781,781,[],Queinieres
+782,782,[],Chemin de la Gare
+783,783,[],Village - Tourrettes-sur-Loup
+784,784,[],La Madeleine
+785,785,[],Le Clapier
+786,786,[],Combe du Rai
+787,787,[],Pont de Cagnes
+788,788,[],CollÃ¨ge de la Sine
+789,789,[],CollÃ¨ge des Baous
+790,790,[],Mairie de GattiÃ¨res
+791,791,[],Chemin de Provence
+792,792,[],La Halte
+793,793,[],La Bastide
+794,794,[],Les Cigales
+795,795,[],Maison Pour Tous
+796,796,[],Saint Paul
+797,797,[],Les Amandiers
+798,798,[],Langevin
+799,799,[],Stade Tennis
