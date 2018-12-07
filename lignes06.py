@@ -33,7 +33,9 @@ class Db():
         return self.df['idscrap'].max()
 
 class Scrapper():
-    def __init__(self,idarret,db):
+    def __init__(self,idarret,db,max_time = 3600):
+        self.start = time.time()
+        self.max_time = max_time
         self.idarret = idarret
         self.db = db
         self.should_continue = True
@@ -113,7 +115,7 @@ class Scrapper():
            
            return temps
     def launch(self,repos):
-        while self.should_continue:
+        while self.should_continue and time.time()-self.start >self.max_time:
             try:
                 temps = self.scrap()
             except Exception as e:
@@ -134,5 +136,5 @@ if __name__ =='__main__':
     print(arret)
 #    sys.stdout = open('log' + str(arret), 'w')
     db = Db(filename = 'data200_' + str(arret) + '.csv')
-    scrapper = Scrapper(arret,db)
+    scrapper = Scrapper(arret,db,4*3600)
     scrapper.launch(25)

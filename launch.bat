@@ -25,5 +25,6 @@ timeout 2
 START /B "" python lignes06.py 241
 timeout 2 
 START /B "" python lignes06.py 230
+pause
 
 
