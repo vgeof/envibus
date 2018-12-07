@@ -9,6 +9,7 @@ import os
 import signal
 import sys
 from shutil import copyfile
+import sys
 
 
 class Db():
@@ -32,7 +33,9 @@ class Db():
         return self.df['idscrap'].max()
 
 class Scrapper():
-    def __init__(self,idarret,db):
+    def __init__(self,idarret,db,max_time = 3600):
+        self.start = time.time()
+        self.max_time = max_time
         self.idarret = idarret
         self.db = db
         self.should_continue = True
@@ -74,7 +77,10 @@ class Scrapper():
                elt = soup.find('span')
                if elt:
                    return self.convert_str_to_time(elt.get_text().lower())
-       temps  = str(soup.find('div',class_ = 'data').find('div')).split('<br/>')
+       temps  = list(filter(lambda x:'200' in str(x),soup.find_all('div',class_ = 'data')))
+       if len(temps)!=1:print('WARNING : Several lines are found, only first is parsed')
+       temps = temps[0]
+       temps = str(temps.find('div')).split('<br/>')
        temps= list(map(lambda x:(x,'*'  in x ),temps))
        temps = list(map(lambda x: (taff(x[0]),x[1]) ,temps))
 #       temps = list(map(lambda x: (BeautifulSoup(x[0],features = 'lxml'),x[1]),temps))
@@ -95,7 +101,7 @@ class Scrapper():
        self.safe_quit = True
 
     def scrap(self):
-       print('request sent')
+       print('request sent for stop : '+ str(self.idarret))
        try:
            soup = self.requete()
        except Exception as e:
@@ -109,7 +115,7 @@ class Scrapper():
            
            return temps
     def launch(self,repos):
-        while self.should_continue:
+        while self.should_continue and time.time()-self.start >self.max_time:
             try:
                 temps = self.scrap()
             except Exception as e:
@@ -126,7 +132,9 @@ class Scrapper():
         self.should_continue = False        
 
 if __name__ =='__main__':
-
-    db = Db()
-    scrapper = Scrapper(490,db)
+    arret = sys.argv[1]
+    print(arret)
+#    sys.stdout = open('log' + str(arret), 'w')
+    db = Db(filename = 'data200_' + str(arret) + '.csv')
+    scrapper = Scrapper(arret,db,4*3600)
     scrapper.launch(25)
