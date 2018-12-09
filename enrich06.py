@@ -152,8 +152,10 @@ class Enricher:
                     if  (nex['time_saved']-current['time_saved']).seconds>60*(current['minutes']+1):
                         fin = True
                         print('tracking lost')
-                    elif nex['minutes'] < current['minutes'] - 5:
+                    elif (-nex['minutes'] + current['minutes'])*60/(nex['time_saved'] - current.time_saved).seconds>10:
                         print('WARNING : Violent increase of speed detected')
+                        print('speed : '   + str((-nex['minutes'] + current['minutes'])\
+                              *60/(nex['time_saved'] - current.time_saved).seconds))
                         bug = True
                     elif nex['nb_scrap'] <current['nb_scrap']:
                         fin = True
@@ -167,7 +169,7 @@ class Enricher:
                 if bug : 
                     if mode=='manual':
                         plt.clf()
-                        en.plot()                    
+                        self.plot()                    
                         plt.plot(nex['time_saved'],nex['minutes'],'o')
                         plt.xlim ((nex['time_saved'] + datetime.timedelta(0,-150),nex['time_saved']+ datetime.timedelta(0,150))) 
                         plt.draw()
