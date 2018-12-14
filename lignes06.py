@@ -135,6 +135,6 @@ if __name__ =='__main__':
     arret = sys.argv[1]
     print(arret)
 #    sys.stdout = open('log' + str(arret), 'w')
-    db = Db(filename = 'data200_' + str(arret) + '.csv')
+    db = Db(filename = './data_raw/data200_' + str(arret) + '.csv')
     scrapper = Scrapper(arret,db,4*3600)
     scrapper.launch(25)
