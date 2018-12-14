@@ -115,7 +115,7 @@ class Scrapper():
            
            return temps
     def launch(self,repos):
-        while self.should_continue and time.time()-self.start >self.max_time:
+        while self.should_continue and time.time()-self.start <self.max_time:
             try:
                 temps = self.scrap()
             except Exception as e:
