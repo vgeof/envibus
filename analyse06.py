@@ -16,9 +16,14 @@ columns = ['idscrap','time_saved','minutes','theorique','bus_id','real_minutes',
 
 data = pandas.read_csv('./data_enriched/data0.csv',usecols = columns,parse_dates=['time_saved','arrivees'])
 #data = data.loc[data['theorique']==True]
-data = data.loc[data['time_saved']>="2018-11-22 18:51:03.401308"]
+data = data.loc[data['time_saved']<="2018-11-30 18:51:03.401308"]
 #data = data.loc[data['time_saved']<="2018-11-20 8:51:03.401308"]
 
+def plot(key = 'bus_id'):
+        for i in list(set(data[key])):
+            slic = data.loc[data[key]==i]
+            plt.plot_date(slic['time_saved'],slic['minutes'],'+',label=str(i))
+            
 #plt.plot_date('time_saved','minutes','+',data = data)
 data = data.loc[-data['arrivees'].isnull()]
 bus_ids = list(set(data['bus_id']))
