@@ -183,7 +183,16 @@ class Enricher:
                         self.data.drop(nex.name,inplace = True)
                         self.add_ignored(self.arret,nex.idscrap,nex.time_saved,nex.minutes)
                         self.identifie_bus2()
-                        return       
+                        return  
+                    elif len(ans) ==2:
+                        if ans[1]=='y':
+                            nb = int(ans[0])
+                            for i in range(nb):
+                                nex = firsts.iloc[i+1]
+                                self.data.drop(nex.name,inplace = True)
+                                self.add_ignored(self.arret,nex.idscrap,nex.time_saved,nex.minutes)
+                            self.identifie_bus2()
+                            return  
                     elif ans =='exit' :  sys.exit(0)
                     else : pass
                 
@@ -234,14 +243,14 @@ class Enricher:
             
 
 if __name__=="__main__":
-    en = Enricher('data200current.csv',490,"2018-12-05",None,True)
+    en = Enricher('data_raw/data200_490.csv',490,"2018-11-23",None,True)
     en.identifie_bus2('continue')
-
-    print('adding arrivees')
-    en.add_arrivees()
-    print('saving')
-    en.save()
-    print('done')
+#
+#    print('adding arrivees')
+#    en.add_arrivees()
+#    print('saving')
+#    en.save()
+#    print('done')
 #    en.add_arrivees()
 #    en.compute_dist()
 #    plt.figure()

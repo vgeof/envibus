@@ -14,9 +14,12 @@ from sklearn.model_selection import train_test_split
 from sklearn.neural_network import MLPRegressor
 from sklearn.linear_model import LinearRegression
 
-df = pandas.read_csv('./data_enriched/data2.csv',parse_dates = ['time_saved'])
+df = pandas.read_csv('./data_enriched/data3.csv',parse_dates = ['time_saved'])
 df = df.loc[-pandas.isnull(df.arrivees)]
 good_buses =  df.groupby('bus_id')['idscrap'].apply(lambda x: len(x))>30
+good_buses = set(good_buses.loc[good_buses].index)
+df = df.loc[df.bus_id.apply(lambda x: x in good_buses)]
+good_buses =  df.groupby('bus_id')['minutes'].max()>15
 good_buses = set(good_buses.loc[good_buses].index)
 df = df.loc[df.bus_id.apply(lambda x: x in good_buses)]
 firsts = df.groupby('bus_id')['time_saved'].apply(lambda x: x.min())
@@ -53,6 +56,11 @@ def calcul(x,cs):
         ret += c[i]*np.power(x,j)
     return ret
 
+def plot(key = 'bus_id'):
+        for i in list(set(X[key])):
+            slic = X.loc[X[key]==i]
+            plt.plot(slic['hour'],slic['y'],'+',label=str(i))
+            
 #
 #for name,bus in df.groupby('bus_id'):
 #    if name%3 ==0:
@@ -62,6 +70,7 @@ def calcul(x,cs):
 d = df.groupby('bus_id').apply(transform)
 y = d.map(lambda x: x[3])
 X = pandas.DataFrame(list(d.map(lambda x : x[1])),d.index)
+X['y'] = y
 X['day'] = d.map(lambda x: x[2].dayofweek)
 X['hour'] = d.map(lambda x: (x[2]-datetime.datetime(x[2].year,x[2].month,x[2].day,17, 0, 0, 436453)).total_seconds()/60)
 
@@ -71,11 +80,17 @@ X['hour2'] = X.hour.apply(lambda x : x**2)
 X['hour3'] = X.hour.apply(lambda x : x**3)
 X['mer'] = X.day==2
 X['lun'] = X.day==0
-X = X[['hour','hour2','mer','lun']]
+plot('day')
+
+import statsmodels.formula.api as smf
+from statsmodels.sandbox.regression.predstd import wls_prediction_std
+
 Xtrain,Xtest,ytrain,ytest = train_test_split(X,y,test_size = 0.3)
 #clf = MLPRegressor((100,100),max_iter = 500,verbose = True)
+lr = smf.ols('y ~ hour + hour2 +C(day)', data=Xtrain).fit()
 clf = LinearRegression()
 clf.fit(Xtrain,ytrain)
 print(sum(abs(clf.predict(Xtest) - ytest))/len(ytest))
 print(clf.score(Xtrain,ytrain))
 print(clf.score(Xtest,ytest))
+
