@@ -1,3 +1,4 @@
+pause
 cd "C:\Users\vgeoffroy\envibus"
 call C:\ProgramData\Anaconda3\Scripts\activate.bat C:\ProgramData\Anaconda3 
 START /B "" python lignes06.py 490
@@ -25,6 +26,7 @@ timeout 2
 START /B "" python lignes06.py 241
 timeout 2 
 START /B "" python lignes06.py 230
+shutdown /s /t 15000
 pause
 
 
