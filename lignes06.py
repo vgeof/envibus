@@ -10,27 +10,22 @@ import signal
 import sys
 from shutil import copyfile
 import sys
+import sqlite3
 
 
 class Db():
-    def __init__(self,filename = 'data200.csv'):
-        self.filename = filename
-        self.columns = ['idscrap','time_saved','minutes','theorique']
-        try : 
-            self.df = pandas.read_csv(self.filename,usecols = self.columns)
-        except FileNotFoundError: 
-            print('no file found, creating a new one')
-            self.df = pandas.DataFrame(columns = self.columns)
-            self.df.to_csv(filename)
-    def save(self):
-        copyfile(self.filename, self.filename + '.bak')
-        self.df.to_csv(self.filename)
+    def __init__(self,filename = 'data.db'):
+        self.conn = sqlite3.connect(filename)
+        self.cursor = self.conn.cursor()
+        self.columns = ['id_arret','id_scrap','time_saved','minutes','theorique']
     def insert(self,data):
         assert(len(data) == len(self.columns))
-        self.df = self.df.append(pandas.DataFrame([data],columns = self.columns),sort=False) 
-    def get_highest_idscrap(self):
-        if len(self.df)==0:return 0
-        return self.df['idscrap'].max()
+        self.cursor.execute("INSERT INTO SCRAPPED("+','.join(self.columns)+") VALUES(?,?,?,?,?)",data)
+        self.conn.commit()
+    def get_highest_idscrap(self,arret):
+        t = (arret,)
+        self.cursor.execute("SELECT MAX(id_scrap) FROM SCRAPPED WHERE id_arret=?",t)
+        return self.cursor.fetchone()[0]
 
 class Scrapper():
     def __init__(self,idarret,db,max_time = 3600):
@@ -94,10 +89,9 @@ class Scrapper():
    
     def insert_in_db(self,temps):
        self.safe_quit = False
-       idscrap = self.db.get_highest_idscrap() + 1
+       idscrap = self.db.get_highest_idscrap(self.idarret) + 1
        for temp in temps:
-           self.db.insert([idscrap,datetime.now(),temp[0],temp[1]])
-       self.db.save()
+           self.db.insert([self.idarret,idscrap,datetime.now(),temp[0],temp[1]])
        self.safe_quit = True
 
     def scrap(self):
@@ -132,9 +126,10 @@ class Scrapper():
         self.should_continue = False        
 
 if __name__ =='__main__':
-    arret = sys.argv[1]
+#    arret = sys.argv[1]
+    arret = 490
     print(arret)
 #    sys.stdout = open('log' + str(arret), 'w')
-    db = Db(filename = './data_raw/data200_' + str(arret) + '.csv')
+    db = Db()
     scrapper = Scrapper(arret,db,4*3600)
-    scrapper.launch(25)
+    scrapper.launch(1)
