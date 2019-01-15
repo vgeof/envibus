@@ -16,6 +16,7 @@ from shutil import copyfile
 import os
 import datetime
 import sys
+import sqlite3
 
 
 def avg_datetime(series):
@@ -26,84 +27,35 @@ def avg_datetime(series):
 class Enricher:
     def __init__(self,filename,arret,deb=None,fin = None,ignored = True):
         
-        self.columns = ['idscrap','time_saved','minutes','theorique']
-        self.data = pandas.read_csv(filename,usecols = self.columns,parse_dates=['time_saved'])
-        self.arret = arret
-        if deb: self.data = self.data.loc[self.data['time_saved']>=deb]
-        if fin : self.data = self.data.loc[self.data['time_saved']<=fin]
-        self.ignored = ignored
-        if ignored : self.ignoreds = pandas.read_csv('ignored.csv',usecols = ['arret','idscrap','time_saved','minutes'],dtype = str)
         
-        self.data = self.data.loc[self.data['theorique']==False]
-        self.drop_ignored()
+        self.arret = arret
+        self.conn = sqlite3.connect(filename)
+        self.cursor = self.conn.cursor() 
     def plot(self,key = 'bus_id'):
         for i in list(set(self.data[key])):
             slic = self.data.loc[self.data[key]==i]
             plt.plot_date(slic['time_saved'],slic['minutes'],'+',label=str(i))
             
-    def drop_ignored(self):
-        for row in self.ignoreds.loc[self.ignoreds.arret == str(self.arret) ].iterrows():
-            row = row[1]
-            query= "idscrap==@row.idscrap & time_saved == @row.time_saved & minutes == @row.minutes"  
-            founds = self.data.query(query)
-            if len(founds)==1:
-                self.data.drop(founds.iloc[0].name,inplace = True)
-    def search_ignored(self,arret,idscrap,time_saved,minutes):
-        if not self.ignored : return
-        query = "arret == @arret & idscrap==@idscrap & time_saved == @time_saved & minutes == @minutes" 
-        return  self.ignoreds.query(query)
+#    def drop_ignored(self):
+#        self.conn.execute("SELECT * FROM IGNORED WHERE id_arret=?",self.arret)
+#        for row in self.ignoreds.loc[self.ignoreds.arret == str(self.arret) ].iterrows():
+#            row = row[1]
+#            query= "idscrap==@row.idscrap & time_saved == @row.time_saved & minutes == @row.minutes"  
+#            founds = self.data.query(query)
+#            if len(founds)==1:
+#                self.data.drop(founds.iloc[0].name,inplace = True)
+    def search_ignored(self,id_):
+        self.cursor.execute("SELECT * FROM BUS WHERE id=? AND id_bus=-1", id_)
+        return  self.cursor.fetchone()
     
-    def add_ignored(self,arret,idscrap,time_saved,minutes):
-        arret = str(arret)
-        idscrap = str(idscrap)
-        time_saved = str(time_saved)
-        minutes = str(minutes)
-        if not self.ignored : return
-        founds = self.search_ignored(arret,idscrap,time_saved,minutes)
+    def add_ignored(self,id_):
+        founds = self.search_ignored(id_)
         if len(founds) > 0 : print('already in database')
         else : 
-            self.ignoreds = self.ignoreds.append(pandas.DataFrame([(arret,idscrap,time_saved,minutes)],columns = self.ignoreds.columns))
-            self.ignoreds.to_csv('ignored.csv')    
+            self.cursor.execute("INSERT INTO BUS VALUES(?,-1)")
+            self.cursor.commit()
 #data['rank'] = data.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
-    def identifie_bus(self):
-        self.data['bus_id'] = pandas.Series(0,index = self.data.index)
-        data2 = self.data.copy()
-        
-        while len(data2)!=0:
-            data2['rank'] = data2.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
-            cur = data2.loc[data2['rank']==1]
-            bus_id = self.data['bus_id'].max() + 1
-            fin = False
-            arrive = False
-            while not fin :
-    #                plt.clf()
-    #                plot()
-    #                plt.pause(0.05)
-                arrive = cur.iloc[0]['minutes'] < 1
     
-                if not arrive and len(cur)>1 :
-                    fin = (cur.iloc[1]['time_saved']-cur.iloc[0]['time_saved']).seconds>60*cur.iloc[0]['minutes']\
-                    or (cur.iloc[1]['minutes']-cur.iloc[0]['minutes'])>3 and cur.iloc[0]['minutes']<=1\
-                    or (cur.iloc[1]['minutes']-cur.iloc[0]['minutes'])>7
-                else: fin = arrive or len(cur)<=1
-                self.data.loc[cur.iloc[0].name,'bus_id'] = bus_id
-                data2 = data2.drop(cur.index[0])
-                cur = cur.drop(cur.index[0])
-            if arrive:
-                remaining = len(cur)>0
-                if remaining:remaining =cur.iloc[0]['minutes']<1 
-                while remaining:
-                    self.data.loc[cur.iloc[0].name,'bus_id'] = bus_id
-                    data2 = data2.drop(cur.index[0])
-                    cur = cur.drop(cur.index[0])
-                    remaining = len(cur)>0
-                    if remaining:remaining =cur.iloc[0]['minutes']<1
-                    
-            print('bus added ' )
-
-
-        self.plot()
-        plt.show()
         
     def add_idscrap_count(self):
             self.data = self.data.merge(pandas.DataFrame(self.data.groupby('idscrap')['time_saved'].count())\
@@ -115,11 +67,9 @@ class Enricher:
 
         
     def identifie_bus2(self,mode = 'manual'):
-        assert(mode in ('manual','suppress','continue'))
-        self.data['bus_id'] = pandas.Series(0,index = self.data.index)
-        data = self.data.copy()
-        
-        
+        assert(mode in ('manual','suppress','continue'))        
+        self.cursor.execute("SELECT id, RANK() OVER(PARTITION BY id_scrap ORDER BBY minutes) FROM SCRAPPED WHERE id_arret = ? AND id NOT IN(SELECT id FROM BUS)",(self.arret,))
+        data = self.cursor.fetchall()
         while len(data)!=0:
             def compute(data2):
                 data2['rank'] = data2.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
@@ -255,7 +205,7 @@ class Enricher:
             
 
 if __name__=="__main__":
-    en = Enricher('data_raw/data200_490.csv',490,"2018-11'23",None,True)
+    en = Enricher('data.db',490,"2018-11'23",None,True)
     en.identifie_bus2('continue')
 #
     print('adding arrivees')
