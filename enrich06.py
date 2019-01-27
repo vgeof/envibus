@@ -25,15 +25,45 @@ def avg_datetime(series):
     return dt_min + functools.reduce(operator.add, deltas) / len(deltas)
 
 class Enricher:
-    def __init__(self,filename,arret,deb=None,fin = None,ignored = True):
+    def __init__(self,filename,arret,deb=None,fin = None,save = True):
         
-        
+
         self.arret = arret
-        self.conn = sqlite3.connect(filename)
+        self.conn = sqlite3.connect(filename,detect_types = sqlite3.PARSE_DECLTYPES)
         self.cursor = self.conn.cursor() 
-    def plot(self,key = 'bus_id'):
-        for i in list(set(self.data[key])):
-            slic = self.data.loc[self.data[key]==i]
+        if fin is None: self.fin='2999-10-10'
+        else: self.fin=fin
+        if deb is None: self.deb='1999-10-10'
+        else:self.deb=deb
+    
+    def enrich_fast(self,mode):
+        self.cursor.execute("SELECT time_saved FROM SCRAPPED WHERE id_arret = ? AND id NOT IN(SELECT id FROM BUS)\
+                                AND time_saved >? AND time_saved <?  AND theorique =0 ORDER BY time_saved"\
+                            ,(self.arret,self.deb,self.fin))
+        times = list(map(lambda x :x[0],self.cursor.fetchall()))
+        front = [self.deb]
+        exdeb = self.deb
+        exfin=self.fin
+        for i in range(len(times)-1):
+            if (times[i+1]-times[i]).seconds>4*3600:
+                front.append(times[i] +  (times[i+1]-times[i])/2)
+        front.append(self.fin)
+        for i in range(len(front)-1):
+            self.deb = front[i]
+            self.fin = front[i+1]
+            print('range : '+str(self.deb) + '->' + str(self.fin))
+            self.identifie_bus2(mode)
+        self.deb = exdeb
+        self.fin = exfin
+                
+    def plot(self,key = 'id_bus'):
+        self.cursor.execute("SELECT * FROM SCRAPPED LEFT OUTER JOIN BUS on BUS.id =\
+                            SCRAPPED.id WHERE time_saved >? AND time_saved <? AND id_arret=? AND theorique = 0"\
+                            ,(self.deb,self.fin,self.arret))
+        data = pandas.DataFrame(self.cursor.fetchall(),\
+                                    columns = list(map(lambda x:x[0],self.cursor.description))).fillna(-1)
+        for i in list(set(data[key])):
+            slic = data.loc[data[key]==i]
             plt.plot_date(slic['time_saved'],slic['minutes'],'+',label=str(i))
             
 #    def drop_ignored(self):
@@ -44,50 +74,52 @@ class Enricher:
 #            founds = self.data.query(query)
 #            if len(founds)==1:
 #                self.data.drop(founds.iloc[0].name,inplace = True)
-    def search_ignored(self,id_):
-        self.cursor.execute("SELECT * FROM BUS WHERE id=? AND id_bus=-1", id_)
-        return  self.cursor.fetchone()
+
     
     def add_ignored(self,id_):
-        founds = self.search_ignored(id_)
-        if len(founds) > 0 : print('already in database')
-        else : 
-            self.cursor.execute("INSERT INTO BUS VALUES(?,-1)")
-            self.cursor.commit()
+            self.cursor.execute("INSERT INTO BUS(id,id_bus) VALUES(?,-1)",(int(id_),))
+            self.conn.commit()
 #data['rank'] = data.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
     
-        
-    def add_idscrap_count(self):
-            self.data = self.data.merge(pandas.DataFrame(self.data.groupby('idscrap')['time_saved'].count())\
-                            .rename(columns = {'time_saved':'nb_scrap'}),on = 'idscrap')\
-                            .set_index(self.data.index)
-            self.data = self.data.merge(pandas.DataFrame(self.data.groupby('idscrap')['minutes'].mean())\
-                            .rename(columns = {'minutes':'minutes_mean'}),on = 'idscrap')\
-                            .set_index(self.data.index)
-
+    def add_bus(self,bus_ids):
+        self.cursor.execute("SELECT MAX(id_bus) FROM BUS")
+        bus_id = self.cursor.fetchone()[0]
+        if bus_id is None: bus_id=1
+        else: bus_id = bus_id+1
+        elts = list(map(lambda x : (int(x),int(bus_id)),bus_ids))
+        self.cursor.executemany("INSERT INTO BUS(id,id_bus) VALUES(?,?)",elts)
+        self.conn.commit()
         
     def identifie_bus2(self,mode = 'manual'):
-        assert(mode in ('manual','suppress','continue'))        
-        self.cursor.execute("SELECT id, RANK() OVER(PARTITION BY id_scrap ORDER BBY minutes) FROM SCRAPPED WHERE id_arret = ? AND id NOT IN(SELECT id FROM BUS)",(self.arret,))
-        data = self.cursor.fetchall()
+        assert(mode in ('manual','suppress','continue'))  
+        data = ('pipeau')
         while len(data)!=0:
-            def compute(data2):
-                data2['rank'] = data2.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
-                try : 
-                    data2.drop(['nb_scrap','minutes_mean'],1,inplace = True)
-                except KeyError:pass
-                index = data2.index
-                data2 = data2.merge(pandas.DataFrame(data2.groupby('idscrap')['minutes'].mean())\
-                                .rename(columns = {'minutes':'minutes_mean'}),on = 'idscrap')
-                data2 = data2.merge(pandas.DataFrame(data2.groupby('idscrap')['time_saved'].count())\
-                                .rename(columns = {'time_saved':'nb_scrap'}),on = 'idscrap')\
-                                    .set_index(index)
-                firsts = data2.loc[data2['rank']==1]
-                return firsts,data2
-            firsts,data = compute(data)
-            bus_id = self.data['bus_id'].max() + 1
-            fin = False
+            self.cursor.execute(""" WITH TO_DO AS(
+                    SELECT * FROM SCRAPPED WHERE id_arret = ? AND id NOT IN(SELECT id FROM BUS)
+                                AND time_saved >?
+                                AND time_saved <?
+                                AND NOT theorique)
+                                SELECT id,
+                                RANK() OVER(PARTITION BY t1.id_scrap ORDER BY minutes) rank,
+                                minutes,
+                                t1.id_scrap AS id_scrap,
+                                time_saved,
+                                t3.mean as minutes_mean,
+                                t2.count as nb_scrap
+                                FROM TO_DO t1
+                                INNER JOIN (SELECT id_scrap,COUNT(id) as count FROM TO_DO GROUP BY id_scrap) t2 
+                                ON t1.id_scrap = t2.id_scrap
+                                INNER JOIN (SELECT id_scrap,AVG(minutes) as mean FROM TO_DO GROUP BY id_scrap) t3
+                                WHERE t3.id_scrap = t1.id_scrap
+                                ORDER BY t1.time_saved""",(self.arret,self.deb,self.fin))
+            data = pandas.DataFrame(self.cursor.fetchall(),\
+                                    columns = list(map(lambda x:x[0],self.cursor.description)))
+            if len(data) ==0: break
+            firsts = data.loc[data['rank']==1].groupby('id_scrap',as_index=False).first()
+#            print(firsts.iloc[1])
             
+            fin = False
+            bus_ids = []
             while not fin :
     #                plt.clf()
     #                plot()
@@ -102,32 +134,37 @@ class Enricher:
                     if  (nex['time_saved']-current['time_saved']).seconds>60*(current['minutes']+1):
                         fin = True
                         print('tracking lost')
-                    elif (-nex['minutes'] + current['minutes'])*60/(nex['time_saved'] - current.time_saved).seconds>10:
-                        print('WARNING : Violent increase of speed detected')
+                    elif (-nex['minutes'] + current['minutes'])*60/(nex['time_saved'] - current.time_saved).seconds>7:
+                        print('WARNING : Violent variation of speed detected')
                         print('speed : '   + str((-nex['minutes'] + current['minutes'])\
                               *60/(nex['time_saved'] - current.time_saved).seconds))
                         bug = True
-                    elif nex['nb_scrap'] <current['nb_scrap']:
+                    if nex['nb_scrap'] <current['nb_scrap']:
                         fin = True
                         print('nb_scrap decreases')
                     
                     elif nex['nb_scrap'] ==current['nb_scrap'] and nex['minutes_mean'] >=current['minutes_mean']+5:
                         print('nb_bus steady, but a new bus has been probbly added')
                         fin = True
+                    elif nex['nb_scrap'] ==current['nb_scrap'] and bug:
+                        print('No bug since nb_scrap is steady')
+                        bug = False
                 if fin : print('bus added :' + str(current.time_saved))
 
                 if bug : 
-                    if mode=='manual':
-                        others = data.loc[data['idscrap']==nex['idscrap']].copy()
-                        print(others)
-                        if len(others)==1:
-                            print('no bug since bus is the last one')
-                            ans = 'n'
-                        else:
-                            others.loc['rank']=others.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
-                            bus_up = others.loc[others['rank']==2].iloc[0]
-                            if abs(bus_up['minutes']-current['minutes'])<abs(nex['minutes']-current['minutes']):
-                                print('Real bug detected since a Bus inserted !!! ')
+                    others = data.loc[data['id_scrap']==nex['id_scrap']].copy()
+#                    print(others)
+                    if len(others)==1:
+                        print('no bug since bus is the last one')
+                        ans = 'n'
+                    else:
+                        others['rank']=others.groupby('id_scrap')['minutes'].rank(ascending=True,method = 'first')
+#                        print(others)
+                        bus_up = others.loc[others['rank']==2].iloc[0]
+                        if abs(bus_up['minutes']-current['minutes'])<abs(nex['minutes']-current['minutes']):
+                            print('Real bug detected since a Bus inserted !!! ')
+                            if mode=='manual':
+
                                 plt.clf()
                                 self.plot()                    
                                 plt.plot(nex['time_saved'],nex['minutes'],'o')
@@ -137,50 +174,30 @@ class Enricher:
                                 plt.pause(0.05)
                                 ans = input('deleting point ? (y:yes/ n: no and continue/ exit : exit) > ')
                                 plt.close()
-                            else: ans = 'n'
+                            elif mode=='suppress' : ans = 'y'
+                            elif mode =='continue' : ans = 'n'
+                        else: ans = 'n'
                                 
-                    elif mode=='suppress' : ans = 'y'
-                    elif mode =='continue' : ans = 'n'
+                    
                     if ans =='y':
-                        self.data.drop(nex.name,inplace = True)
-                        self.add_ignored(self.arret,nex.idscrap,nex.time_saved,nex.minutes)
-                        self.identifie_bus2()
+                        self.add_ignored(nex.id)
+                        self.identifie_bus2(mode)
                         return  
                     elif len(ans) ==2:
                         if ans[1]=='y':
                             nb = int(ans[0])
                             for i in range(nb):
                                 nex = firsts.iloc[i+1]
-                                self.data.drop(nex.name,inplace = True)
-                                self.add_ignored(self.arret,nex.idscrap,nex.time_saved,nex.minutes)
+                                self.add_ignored(nex.id)
                             self.identifie_bus2()
                             return  
                     elif ans =='exit' :  sys.exit(0)
                     else : pass
                 
-                            
-                self.data.loc[current.name,'bus_id'] = bus_id
-                data = data.drop(current.name)
+                bus_ids.append(current.id)            
                 firsts = firsts.drop(current.name)
+            self.add_bus(bus_ids)
                         
-            
-    def add_arrivees(self):
-        
-#        def f(x):
-#            return x['time_saved'].max()
-        arrives = self.data.groupby('bus_id')['minutes'].min()<2
-        heures = self.data.groupby('bus_id')['time_saved'].max()
-        def summarize(index):
-            if arrives.loc[index]: return (index,heures[index])
-            else : return (index,None)
-#        a = self.data.groupby('bus_id').agg(f)
-        arrivees = pandas.DataFrame(list(arrives.index.map(summarize)),columns = ['bus_id','arrivees'])
-        self.data = self.data.merge(arrivees,on = 'bus_id')
-        arrives = self.data.loc[-self.data['arrivees'].isnull()]
-        self.data.loc[arrives.index,'real_minutes']=(arrives['arrivees'] - arrives['time_saved']).map(lambda x:x.seconds/60)
-    def save(self):
-        ide = len(os.listdir('data_enriched'))
-        self.data.to_csv('./data_enriched/data' + str(ide) + '.csv')
         
     def compute_dist(self):
         self.data['distance'] = pandas.Series(0,index = self.data.index)
@@ -205,14 +222,10 @@ class Enricher:
             
 
 if __name__=="__main__":
-    en = Enricher('data.db',490,"2018-11'23",None,True)
-    en.identifie_bus2('continue')
+    en = Enricher('data.db',490,"2018-12-05",'2018-12-22')
+#    en.identifie_bus2('continue')
 #
-    print('adding arrivees')
-    en.add_arrivees()
-    print('saving')
-    en.save()
-    print('done')
+    en.enrich_fast('suppress')
 #    en.add_arrivees()
 #    en.compute_dist()
 #    plt.figure()

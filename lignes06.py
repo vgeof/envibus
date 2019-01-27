@@ -126,10 +126,10 @@ class Scrapper():
         self.should_continue = False        
 
 if __name__ =='__main__':
-#    arret = sys.argv[1]
-    arret = 490
+    arret = sys.argv[1]
+#    arret = 490
     print(arret)
 #    sys.stdout = open('log' + str(arret), 'w')
     db = Db()
     scrapper = Scrapper(arret,db,4*3600)
-    scrapper.launch(1)
+    scrapper.launch(25)
