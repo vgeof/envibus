@@ -22,12 +22,12 @@ class compute:
     def __init__(self,arret = 490,filename = 'data.db',minutes_min = 15,nb_data_min = 30):
         self.nb_data_min = nb_data_min
         self.minutes_min = minutes_min
-        self.con = sqlite3.connect(filename,detect_types = sqlite3.PARSE_DECLTYPES)
+        self.con = sqlite3.connect(filename,detect_types = sqlite3.PARSE_COLNAMES)
         self.cursor = self.con.cursor()
         self.arret = arret
         
     def plot_bus(self,id_bus)    :
-        self.cursor.execute("""SELECT BUS.id,minutes,time_saved FROM 
+        self.cursor.execute("""SELECT BUS.id,minutes,time_saved as 'time_saved [timestamp]' FROM 
          BUS INNER JOIN SCRAPPED ON SCRAPPED.id = BUS.id
          WHERE id_arret = ? AND id_bus = ?
          """,(self.arret,id_bus))
@@ -39,12 +39,13 @@ class compute:
                          SELECT BUS.id,
                          BUS.id_bus,
                          BUS_INFO.arrivee,
-                         SCRAPPED.time_saved,
+                         SCRAPPED.time_saved as 'time_saved [timestamp]',
                          SCRAPPED.minutes
                          FROM
                          BUS INNER JOIN SCRAPPED ON SCRAPPED.id = BUS.id
                          INNER JOIN BUS_INFO ON BUS.id_bus = BUS_INFO.id_bus
                          WHERE SCRAPPED.id_arret =?
+                         AND BUS.id_bus<>-1
                          AND BUS_INFO.nb_data>=?
                          AND BUS_INFO.minutes_max>= ?
                          AND BUS_INFO.arrivee IS NOT NULL
@@ -59,7 +60,9 @@ class compute:
             first = bus.time_saved.min()
             bus['diff'] = bus.apply(lambda x: (x.time_saved - first).seconds/-60,axis = 1)
             no_double = bus.groupby('minutes')['diff'].mean()
-            x1 = np.interp(grid,list(no_double.index),list(no_double))        
+            if no_double.index.min()<min(grid) and no_double.index.max()>max(grid): # we ensure interp is not useless
+                x1 = np.interp(grid,list(no_double.index),list(no_double))   
+            else
             return list(map(lambda x:datetime.timedelta(0,-x*60)+first,x1))
         d = self.data.groupby('id_bus').apply(fit_on_grid)
         self.data_ready = pandas.DataFrame(d.tolist(),index = d.index,columns = grid)
@@ -72,6 +75,7 @@ class compute:
                 ret += cs[i]*np.power(x,j)
             return ret
         self.data_ready['day'] = self.data_ready[15].map(lambda x: x.dayofweek)
+        self.data_ready = self.data_ready.loc[self.data_ready['day'].map(lambda x: x in (0,1,2,3,4))]
         self.data_ready['hour'] =self.data_ready[15].map(lambda x: (x-datetime.datetime(x.year,x.month,x.day,17, 0, 0, 436453)).total_seconds()/60)
         self.data_ready['hour2'] =self.data_ready['hour'].map(lambda x : x**2)
         self.data_ready['hour'] = (self.data_ready.hour-self.data_ready.hour.mean())/(self.data_ready.hour.max()-self.data_ready.hour.min())
@@ -99,7 +103,7 @@ class RegLin:
         print(f'Erreur moyenne : {err}')
 
     def predict(self,X):
-        return self.model.predict(X)
+        return self.model.predict(X).map(lambda x:datetime.timedelta(0,x*60))+X[15]
 #        X['hour2'] = X.hour.apply(lambda x : x**2)
 #        #X['hour3'] = X.hour.apply(lambda x : x**3)
 #        X['mer'] = X.day==2

@@ -9,16 +9,14 @@ Created on Sun Dec  2 16:01:48 2018
 
 import pandas
 from matplotlib import pyplot as plt
-import numpy as np
 import functools
 import operator
-from shutil import copyfile
-import os
 import datetime
 import sys
 import sqlite3
+import logging
 
-
+logging.basicConfig(level=logging.DEBUG)
 def avg_datetime(series):
     dt_min = series.min()
     deltas = [x-dt_min for x in series]
@@ -29,7 +27,7 @@ class Enricher:
         
 
         self.arret = arret
-        self.conn = sqlite3.connect(filename,detect_types = sqlite3.PARSE_DECLTYPES)
+        self.conn = sqlite3.connect(filename,detect_types = sqlite3.PARSE_COLNAMES)
         self.cursor = self.conn.cursor() 
         if fin is None: self.fin='2999-10-10'
         else: self.fin=fin
@@ -37,7 +35,7 @@ class Enricher:
         else:self.deb=deb
     
     def enrich_fast(self,mode):
-        self.cursor.execute("SELECT time_saved FROM SCRAPPED WHERE id_arret = ? AND id NOT IN(SELECT id FROM BUS)\
+        self.cursor.execute("SELECT time_saved as 'time_saved [timestamp]' FROM SCRAPPED WHERE id_arret = ? AND id NOT IN(SELECT id FROM BUS)\
                                 AND time_saved >? AND time_saved <?  AND theorique =0 ORDER BY time_saved"\
                             ,(self.arret,self.deb,self.fin))
         times = list(map(lambda x :x[0],self.cursor.fetchall()))
@@ -51,15 +49,15 @@ class Enricher:
         for i in range(len(front)-1):
             self.deb = front[i]
             self.fin = front[i+1]
-            print('range : '+str(self.deb) + '->' + str(self.fin))
+            logging.info('range : '+str(self.deb) + '->' + str(self.fin))
             self.identifie_bus2(mode)
         self.deb = exdeb
         self.fin = exfin
                 
     def plot(self,key = 'id_bus'):
-        self.cursor.execute("SELECT * FROM SCRAPPED LEFT OUTER JOIN BUS on BUS.id =\
+        self.cursor.execute("SELECT time_saved as  'time_saved [timestamp]',minutes,? FROM SCRAPPED LEFT OUTER JOIN BUS on BUS.id =\
                             SCRAPPED.id WHERE time_saved >? AND time_saved <? AND id_arret=? AND theorique = 0"\
-                            ,(self.deb,self.fin,self.arret))
+                            ,(keyself.deb,self.fin,self.arret))
         data = pandas.DataFrame(self.cursor.fetchall(),\
                                     columns = list(map(lambda x:x[0],self.cursor.description))).fillna(-1)
         for i in list(set(data[key])):
@@ -103,7 +101,7 @@ class Enricher:
                                 RANK() OVER(PARTITION BY t1.id_scrap ORDER BY minutes) rank,
                                 minutes,
                                 t1.id_scrap AS id_scrap,
-                                time_saved,
+                                time_saved as 'time_saved [timestamp]',
                                 t3.mean as minutes_mean,
                                 t2.count as nb_scrap
                                 FROM TO_DO t1
@@ -128,41 +126,41 @@ class Enricher:
                 bug = False
                 if len(firsts)<=1:
                     fin = True
-                    print('end of firsts')
+                    logging.debug('end of firsts')
                 else :
                     nex = firsts.iloc[1]
                     if  (nex['time_saved']-current['time_saved']).seconds>60*(current['minutes']+1):
                         fin = True
-                        print('tracking lost')
+                        logging.debug('tracking lost')
                     elif (-nex['minutes'] + current['minutes'])*60/(nex['time_saved'] - current.time_saved).seconds>7:
-                        print('WARNING : Violent variation of speed detected')
-                        print('speed : '   + str((-nex['minutes'] + current['minutes'])\
+                        logging.debug('WARNING : Violent variation of speed detected')
+                        logging.debug('speed : '   + str((-nex['minutes'] + current['minutes'])\
                               *60/(nex['time_saved'] - current.time_saved).seconds))
                         bug = True
                     if nex['nb_scrap'] <current['nb_scrap']:
                         fin = True
-                        print('nb_scrap decreases')
+                        logging.debug('nb_scrap decreases')
                     
                     elif nex['nb_scrap'] ==current['nb_scrap'] and nex['minutes_mean'] >=current['minutes_mean']+5:
-                        print('nb_bus steady, but a new bus has been probbly added')
+                        logging.debug('nb_bus steady, but a new bus has been probbly added')
                         fin = True
                     elif nex['nb_scrap'] ==current['nb_scrap'] and bug:
-                        print('No bug since nb_scrap is steady')
+                        logging.debug('No bug since nb_scrap is steady')
                         bug = False
-                if fin : print('bus added :' + str(current.time_saved))
+                if fin : logging.info('bus added :' + str(current.time_saved))
 
                 if bug : 
                     others = data.loc[data['id_scrap']==nex['id_scrap']].copy()
 #                    print(others)
                     if len(others)==1:
-                        print('no bug since bus is the last one')
+                        logging.debug('no bug since bus is the last one')
                         ans = 'n'
                     else:
                         others['rank']=others.groupby('id_scrap')['minutes'].rank(ascending=True,method = 'first')
 #                        print(others)
                         bus_up = others.loc[others['rank']==2].iloc[0]
                         if abs(bus_up['minutes']-current['minutes'])<abs(nex['minutes']-current['minutes']):
-                            print('Real bug detected since a Bus inserted !!! ')
+                            logging.debug('Real bug detected since a Bus inserted !!! ')
                             if mode=='manual':
 
                                 plt.clf()
