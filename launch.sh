@@ -24,4 +24,4 @@ python lignes06.py 229&
 sleep 2
 python lignes06.py 241&
 sleep 2 
-python lignes06.py 230&
+python lignes06.py 230
