@@ -12,6 +12,7 @@ import re
 import pandas
 from matplotlib import pyplot as plt
 from enrich06 import Enricher
+import os
 os.chdir('data_raw')
 arrets = [490,224, 238, 208,207,236,235,218, 233,227,229,241,230]
 def assemble():
@@ -28,6 +29,7 @@ def assemble():
 #    df = df.loc[df['theorique']==False]
     
     df['minutes'] = df['minutes'].astype('int')
+    return df
 #    df['rank'] = df.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
 #    df = df.loc[df['time_saved']>'2018-12-05 17:00:00']
 ##    df = df.loc[df['time_saved']<'2018-12-05 18:00:00']
@@ -47,3 +49,7 @@ def assemble():
 #         en.identifie_bus2()
 
         
+if __name__ =='__main__':
+    df = assemble()
+    df = df.drop('index',axis = 1)
+    df.to_csv('merged.csv',header = False,index = True)
