@@ -168,15 +168,27 @@ class Enricher:
 
                 if bug : 
                     if mode=='manual':
-                        plt.clf()
-                        self.plot()                    
-                        plt.plot(nex['time_saved'],nex['minutes'],'o')
-                        plt.xlim ((nex['time_saved'] + datetime.timedelta(0,-150),nex['time_saved']+ datetime.timedelta(0,150))) 
-                        plt.draw()
-                        plt.show(block = False)
-                        plt.pause(0.05)
-                        ans = input('deleting point ? (y:yes/ n: no and continue/ exit : exit) > ')
-                        plt.close()
+                        others = data.loc[data['idscrap']==nex['idscrap']].copy()
+                        print(others)
+                        if len(others)==1:
+                            print('no bug since bus is the last one')
+                            ans = 'n'
+                        else:
+                            others.loc['rank']=others.groupby('idscrap')['minutes'].rank(ascending=True,method = 'first')
+                            bus_up = others.loc[others['rank']==2].iloc[0]
+                            if abs(bus_up['minutes']-current['minutes'])<abs(nex['minutes']-current['minutes']):
+                                print('Real bug detected since a Bus inserted !!! ')
+                                plt.clf()
+                                self.plot()                    
+                                plt.plot(nex['time_saved'],nex['minutes'],'o')
+                                plt.xlim ((nex['time_saved'] + datetime.timedelta(0,-150),nex['time_saved']+ datetime.timedelta(0,150))) 
+                                plt.draw()
+                                plt.show(block = False)
+                                plt.pause(0.05)
+                                ans = input('deleting point ? (y:yes/ n: no and continue/ exit : exit) > ')
+                                plt.close()
+                            else: ans = 'n'
+                                
                     elif mode=='suppress' : ans = 'y'
                     elif mode =='continue' : ans = 'n'
                     if ans =='y':
@@ -243,21 +255,21 @@ class Enricher:
             
 
 if __name__=="__main__":
-    en = Enricher('data_raw/data200_490.csv',490,"2018-11-23",None,True)
+    en = Enricher('data_raw/data200_490.csv',490,"2018-11'23",None,True)
     en.identifie_bus2('continue')
 #
-#    print('adding arrivees')
-#    en.add_arrivees()
-#    print('saving')
-#    en.save()
-#    print('done')
+    print('adding arrivees')
+    en.add_arrivees()
+    print('saving')
+    en.save()
+    print('done')
 #    en.add_arrivees()
 #    en.compute_dist()
 #    plt.figure()
 #    for name,bus in en.data.groupby('bus_id'):
 #        if not pandas.isna(bus.iloc[0]['arrivees']):
 #            plt.plot(bus['real_minutes'],bus['vitesse'])
-#            
+##            
             
             
 
