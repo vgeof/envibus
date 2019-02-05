@@ -68,7 +68,8 @@ class compute:
             bus['diff'] = bus.apply(lambda x: (x.time_saved - first).seconds/-60,axis = 1)
             no_double = bus.groupby('minutes')['diff'].mean()
             no_double = no_double.loc[no_double.index>=15]
-            rl.fit(np.array(no_double.index).reshape(-1,1),no_double)
+            weights = 5/(np.array(no_double.index)-15 + 5)
+            rl.fit(np.array(no_double.index).reshape(-1,1),no_double,weights)
             score = rl.score(np.array(no_double.index).reshape(-1,1),no_double)
             if score<0.95:print("WARNING : score of " +str(round(score,2)) + " for projection for bus " + str(bus.name))
             return datetime.timedelta(0,-rl.predict(15)[0]*60)+first
