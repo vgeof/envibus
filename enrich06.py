@@ -16,7 +16,7 @@ import sys
 import sqlite3
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 def avg_datetime(series):
     dt_min = series.min()
     deltas = [x-dt_min for x in series]
@@ -57,7 +57,7 @@ class Enricher:
     def plot(self,key = 'id_bus'):
         self.cursor.execute("SELECT time_saved as  'time_saved [timestamp]',minutes,? FROM SCRAPPED LEFT OUTER JOIN BUS on BUS.id =\
                             SCRAPPED.id WHERE time_saved >? AND time_saved <? AND id_arret=? AND theorique = 0"\
-                            ,(keyself.deb,self.fin,self.arret))
+                            ,(key,self.deb,self.fin,self.arret))
         data = pandas.DataFrame(self.cursor.fetchall(),\
                                     columns = list(map(lambda x:x[0],self.cursor.description))).fillna(-1)
         for i in list(set(data[key])):
@@ -117,8 +117,9 @@ class Enricher:
 #            print(firsts.iloc[1])
             
             fin = False
+            retry = False
             bus_ids = []
-            while not fin :
+            while not fin and not retry:
     #                plt.clf()
     #                plot()
     #                plt.pause(0.05)
@@ -179,22 +180,20 @@ class Enricher:
                     
                     if ans =='y':
                         self.add_ignored(nex.id)
-                        self.identifie_bus2(mode)
-                        return  
+                        retry = True
                     elif len(ans) ==2:
                         if ans[1]=='y':
                             nb = int(ans[0])
                             for i in range(nb):
                                 nex = firsts.iloc[i+1]
                                 self.add_ignored(nex.id)
-                            self.identifie_bus2()
-                            return  
+                                retry = True
                     elif ans =='exit' :  sys.exit(0)
                     else : pass
                 
                 bus_ids.append(current.id)            
                 firsts = firsts.drop(current.name)
-            self.add_bus(bus_ids)
+            if not retry: self.add_bus(bus_ids)
                         
         
     def compute_dist(self):
@@ -220,7 +219,7 @@ class Enricher:
             
 
 if __name__=="__main__":
-    en = Enricher('data.db',490,"2018-12-05",'2018-12-22')
+    en = Enricher('data.db',490,"2018-12-05")
 #    en.identifie_bus2('continue')
 #
     en.enrich_fast('suppress')
