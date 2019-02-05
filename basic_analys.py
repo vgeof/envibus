@@ -17,7 +17,6 @@ import sqlite3
 import statsmodels.formula.api as smf
 from statsmodels.sandbox.regression.predstd import wls_prediction_std
 
-
 class compute:
     def __init__(self,arret = 490,filename = 'data.db',minutes_min = 15,nb_data_min = 30):
         self.nb_data_min = nb_data_min
@@ -53,20 +52,35 @@ class compute:
         self.data = pandas.DataFrame(self.cursor.fetchall(),\
                                     columns = list(map(lambda x:x[0],self.cursor.description)))
         
-    def process(self): 
+    def process(self,method = 'interp'): 
+        assert(method in ('interp','reglin'))
+        ################### preparations and definition ##########
         grid =  list(range(15,21))
-
         def fit_on_grid(bus):
             first = bus.time_saved.min()
             bus['diff'] = bus.apply(lambda x: (x.time_saved - first).seconds/-60,axis = 1)
             no_double = bus.groupby('minutes')['diff'].mean()
-            if no_double.index.min()<min(grid) and no_double.index.max()>max(grid): # we ensure interp is not useless
-                x1 = np.interp(grid,list(no_double.index),list(no_double))   
-            else
+            x1 = np.interp(grid,list(no_double.index),list(no_double))   # problem with interpolation
             return list(map(lambda x:datetime.timedelta(0,-x*60)+first,x1))
-        d = self.data.groupby('id_bus').apply(fit_on_grid)
-        self.data_ready = pandas.DataFrame(d.tolist(),index = d.index,columns = grid)
-      
+        rl = LinearRegression()
+        def proj(bus):
+            first = bus.time_saved.min()
+            bus['diff'] = bus.apply(lambda x: (x.time_saved - first).seconds/-60,axis = 1)
+            no_double = bus.groupby('minutes')['diff'].mean()
+            no_double = no_double.loc[no_double.index>=15]
+            rl.fit(np.array(no_double.index).reshape(-1,1),no_double)
+            score = rl.score(np.array(no_double.index).reshape(-1,1),no_double)
+            if score<0.95:print("WARNING : score of " +str(round(score,2)) + " for projection for bus " + str(bus.name))
+            return datetime.timedelta(0,-rl.predict(15)[0]*60)+first
+
+        ####################  exxecution #######################
+        if method=='interp':
+
+            d = self.data.groupby('id_bus').apply(fit_on_grid)
+            self.data_ready = pandas.DataFrame(d.tolist(),index = d.index,columns = grid)
+        elif method=='reglin':
+                self.data_ready = self.data.groupby('id_bus').apply(proj).to_frame()
+                self.data_ready.columns = [15]
         def calcul(x,cs):
             ret = cs[0]*np.power(x,len(cs)-1)
             j = len(cs)-1
@@ -100,7 +114,11 @@ class RegLin:
         self.model = smf.ols('y ~ hour + hour2 +C(day)', data=self.Xtrain.join(self.ytrain.to_frame(name = 'y'))).fit()
     def test(self):
         err = round(sum(abs(self.model.predict(self.Xtest) - self.ytest))/len(self.ytest),2)
-        print(f'Erreur moyenne : {err}')
+        avg = sum((self.model.predict(self.Xtest) - self.ytest))/len(self.ytest)
+        sig =  np.sqrt(sum((self.model.predict(self.Xtest) - self.ytest)**2)/len(self.ytest) - avg**2)
+        print(f'Erreur absolue moyenne : {err}')
+        print(f'Centre de l erreur : {avg}')
+        print(f'Ecart type : {sig}')
 
     def predict(self,X):
         return self.model.predict(X).map(lambda x:datetime.timedelta(0,x*60))+X[15]
@@ -125,7 +143,7 @@ class RegLin:
 if __name__=='__main__':
     c = compute()
     c.get_data()
-    c.process()
+    c.process('reglin')
     c.add_y()
     mod = RegLin()
     mod.train(c.data_ready,c.y)
